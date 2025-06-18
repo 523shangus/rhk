@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import pyrebase
+import pyrebase4 as pyrebase
 import time
 import io
 
