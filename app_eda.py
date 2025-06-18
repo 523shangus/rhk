@@ -5,10 +5,10 @@ import seaborn as sns
 import numpy as np
 import io
 
-# ✅ 페이지 설정 (맨 위!)
+# 페이지 설정
 st.set_page_config(layout="wide")
 
-# ✅ 어두운 배경 + 흰 글씨 전체 테마 적용
+# 다크 테마 스타일 적용
 st.markdown("""
     <style>
     .stApp {
@@ -67,7 +67,8 @@ class EDA:
         st.write(df.describe())
         buffer = io.StringIO()
         df.info(buf=buffer)
-        st.text(buffer.getvalue())
+        s = buffer.getvalue()
+        st.code(s, language='python')  # 여기만 바뀜 ✅
         st.write(df.isnull().sum())
         st.write(f"Number of duplicate rows: {df.duplicated().sum()}")
 
