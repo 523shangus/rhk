@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,13 +6,20 @@ import seaborn as sns
 import numpy as np
 import io
 
-# 한글 폰트 설정 (Streamlit 환경에서 폰트 깨짐 방지)
-plt.rcParams['font.family'] = 'Malgun Gothic' # Windows users
-plt.rcParams['axes.unicode_minus'] = False # 마이너스 폰트 깨짐 방지
+# 스타일을 이용해 배경을 빨간색으로 설정
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #ffdddd;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# Mac 사용자용: 'AppleGothic' 또는 다른 설치된 한글 폰트 사용
-# plt.rcParams['font.family'] = 'AppleGothic'
-
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
 
 class EDA:
     def __init__(self):
@@ -24,29 +32,14 @@ class EDA:
         uploaded_file = st.file_uploader("Upload population_trends.csv", type=["csv"])
 
         if uploaded_file is not None:
-            # 파일을 BytesIO로 읽어 DataFrame으로 변환
             df = pd.read_csv(uploaded_file)
             st.success("File uploaded successfully!")
 
-            # 탭 구조 생성
-            tab1, tab2, tab3, tab4, tab5 = st.tabs([
-                "Basic Statistics",
-                "Annual Trends",
-                "Regional Analysis",
-                "Change Analysis",
-                "Visualization"
-            ])
-
+            tab1, tab2 = st.tabs(["Basic Statistics", "Dummy Tab"])
             with tab1:
                 self.basic_statistics(df.copy())
             with tab2:
-                self.annual_trends(df.copy())
-            with tab3:
-                self.regional_analysis(df.copy())
-            with tab4:
-                self.change_analysis(df.copy())
-            with tab5:
-                self.visualization(df.copy())
+                st.write("이건 그냥 더미 탭입니다.")
         else:
             st.info("Please upload a CSV file to begin analysis.")
 
@@ -59,23 +52,12 @@ class EDA:
 
         st.write("`세종` 지역의 '-' 값을 0으로 치환하고, '인구', '출생아수(명)', '사망자수(명)' 열을 숫자로 변환했습니다.")
         st.dataframe(df.head())
-
-        st.subheader("Data Summary Statistics (`df.describe()`)")
         st.write(df.describe())
-
-        st.subheader("DataFrame Structure (`df.info()`)")
         buffer = io.StringIO()
         df.info(buf=buffer)
-        s = buffer.getvalue()
-        st.text(s)
-
-        st.subheader("Missing Values Check")
+        st.text(buffer.getvalue())
         st.write(df.isnull().sum())
-
-        st.subheader("Duplicate Rows Check")
         st.write(f"Number of duplicate rows: {df.duplicated().sum()}")
-
-    # 생략: annual_trends, regional_analysis, change_analysis, visualization
 
 if __name__ == "__main__":
     app = EDA()
