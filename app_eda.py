@@ -5,28 +5,27 @@ import seaborn as sns
 import numpy as np
 import io
 
-# ✅ 페이지 설정 가장 먼저
+# ✅ 페이지 설정 (맨 위!)
 st.set_page_config(layout="wide")
 
-# ✅ 진한 노랑 배경 + 검정 글씨 전체 적용
+# ✅ 어두운 배경 + 흰 글씨 전체 테마 적용
 st.markdown("""
     <style>
     .stApp {
-        background-color: #fff176 !important;
-        color: black !important;
+        background-color: #1e1e1e !important;
+        color: white !important;
     }
-    html, body, [class*="css"]  {
-        color: black !important;
-        background-color: #fff176 !important;
+    html, body, [class*="css"] {
+        background-color: #1e1e1e !important;
+        color: white !important;
     }
     .stDataFrame table {
-        color: black !important;
-        background-color: #fff59d !important;
+        background-color: #2c2c2c !important;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 한글 폰트 설정
 plt.rcParams['font.family'] = 'Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] = False
 
