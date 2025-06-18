@@ -5,15 +5,23 @@ import seaborn as sns
 import numpy as np
 import io
 
-# ✅ 페이지 설정은 반드시 맨 위에!
+# ✅ 페이지 설정 가장 먼저
 st.set_page_config(layout="wide")
 
-# ✅ 배경을 연한 빨간색으로 설정
+# ✅ 진한 노랑 배경 + 검정 글씨 전체 적용
 st.markdown("""
     <style>
     .stApp {
-        background-color: #fff9c4;  /* 연한 노란색 */
-        color: black;               /* 글자 검정색 */
+        background-color: #fff176 !important;
+        color: black !important;
+    }
+    html, body, [class*="css"]  {
+        color: black !important;
+        background-color: #fff176 !important;
+    }
+    .stDataFrame table {
+        color: black !important;
+        background-color: #fff59d !important;
     }
     </style>
 """, unsafe_allow_html=True)
