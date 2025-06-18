@@ -1,8 +1,8 @@
 streamlit
 pandas
+numpy
 matplotlib
 seaborn
-numpy
 pyrebase4
-pyrebase
-setuptools
+oauth2client
+pycryptodome
