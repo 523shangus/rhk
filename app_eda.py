@@ -12,7 +12,8 @@ st.set_page_config(layout="wide")
 st.markdown("""
     <style>
     .stApp {
-        background-color: #ffdddd;
+        background-color: #fff9c4;  /* 연한 노란색 */
+        color: black;               /* 글자 검정색 */
     }
     </style>
 """, unsafe_allow_html=True)
