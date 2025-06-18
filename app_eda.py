@@ -8,7 +8,7 @@ import io
 # 페이지 설정
 st.set_page_config(layout="wide")
 
-# 다크 테마 스타일 적용
+# 다크 테마 적용
 st.markdown("""
     <style>
     .stApp {
@@ -34,7 +34,7 @@ class EDA:
         st.title("지역별 인구 분석 웹 앱")
 
     def run(self):
-        st.write("`population_trends.csv` 파일을 업로드하여 연도별 지역 인구 추이를 분석합니다.")
+        st.write("`population_trends.csv`파일을 업로드해서 연동별 지역 인구 추이를 분석합니다.")
         uploaded_file = st.file_uploader("Upload population_trends.csv", type=["csv"])
 
         if uploaded_file is not None:
@@ -60,17 +60,29 @@ class EDA:
 
     def basic_statistics(self, df):
         st.header("1. Basic Statistics")
+
         df.loc[df['지역'] == '세종', df.columns] = df.loc[df['지역'] == '세종', df.columns].replace('-', '0')
         for col in ['인구', '출생아수(명)', '사망자수(명)']:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        st.subheader("📄 Sample Rows")
         st.dataframe(df.head())
-        st.write(df.describe())
+
+        st.subheader("📊 Summary Statistics")
+        st.dataframe(df.describe().T.style.format("{:.0f}"))
+
+        st.subheader("🔧 DataFrame Info")
         buffer = io.StringIO()
         df.info(buf=buffer)
         s = buffer.getvalue()
-        st.code(s, language='python')  # 여기만 바뀜 ✅
-        st.write(df.isnull().sum())
-        st.write(f"Number of duplicate rows: {df.duplicated().sum()}")
+        st.code(s, language='python')
+
+        st.subheader("❗ Missing Values")
+        st.dataframe(df.isnull().sum().reset_index().rename(columns={"index": "Column", 0: "Missing Count"}))
+
+        st.subheader("📌 Duplicate Check")
+        dupes = df.duplicated().sum()
+        st.write(f"중복된 행 수: **{dupes}개**")
 
     def annual_trends(self, df):
         st.header("2. Annual Trends")
@@ -103,67 +115,15 @@ class EDA:
 
     def regional_analysis(self, df):
         st.header("3. Regional Analysis")
-        df.loc[df['지역'] == '세종', df.columns] = df.loc[df['지역'] == '세종', df.columns].replace('-', '0')
-        for col in ['인구', '출생아수(명)', '사망자수(명)']:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        region_map = {
-            '서울':'Seoul', '부산':'Busan', '대구':'Daegu', '인천':'Incheon',
-            '광주':'Gwangju', '대전':'Daejeon', '울산':'Ulsan', '세종':'Sejong',
-            '경기':'Gyeonggi', '강원':'Gangwon', '충북':'Chungbuk', '충남':'Chungnam',
-            '전북':'Jeonbuk', '전남':'Jeonnam', '경북':'Gyeongbuk', '경남':'Gyeongnam', '제주':'Jeju'
-        }
-        df = df[df['지역'] != '전국']
-        df['Region_EN'] = df['지역'].map(region_map)
-        latest = df['연도'].max()
-        past = latest - 4
-        recent = df[df['연도'].isin([past, latest])]
-        pivot = recent.pivot(index='Region_EN', columns='연도', values='인구')
-        pivot = pivot.dropna()
-        change = (pivot[latest] - pivot[past]) / 1000
-        change_rate = ((pivot[latest] - pivot[past]) / pivot[past]) * 100
-        fig1, ax1 = plt.subplots(figsize=(12, 6))
-        sns.barplot(x=change.values, y=change.index, ax=ax1, palette='Blues_d')
-        ax1.set_title(f'Population Change ({past}-{latest})')
-        st.pyplot(fig1)
-        fig2, ax2 = plt.subplots(figsize=(12, 6))
-        sns.barplot(x=change_rate.values, y=change_rate.index, ax=ax2, palette='Oranges')
-        ax2.set_title(f'Population Change Rate (%) ({past}-{latest})')
-        st.pyplot(fig2)
+        st.info("This section is under development.")
 
     def change_analysis(self, df):
         st.header("4. Change Analysis")
-        df.loc[df['지역'] == '세종', df.columns] = df.loc[df['지역'] == '세종', df.columns].replace('-', '0')
-        for col in ['인구', '출생아수(명)', '사망자수(명)']:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        df = df[df['지역'] != '전국'].copy()
-        df = df.sort_values(by=['지역', '연도'])
-        df['증감'] = df.groupby('지역')['인구'].diff()
-        top = df.dropna(subset=['증감']).nlargest(100, '증감', keep='all')
-        top['증감'] = top['증감'].apply(lambda x: f'{x:,.0f}')
-        st.dataframe(top[['연도', '지역', '인구', '증감']])
+        st.info("This section is under development.")
 
     def visualization(self, df):
         st.header("5. Visualization")
-        df.loc[df['지역'] == '세종', df.columns] = df.loc[df['지역'] == '세종', df.columns].replace('-', '0')
-        for col in ['인구', '출생아수(명)', '사망자수(명)']:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        df = df[df['지역'] != '전국']
-        region_map = {
-            '서울':'Seoul', '부산':'Busan', '대구':'Daegu', '인천':'Incheon',
-            '광주':'Gwangju', '대전':'Daejeon', '울산':'Ulsan', '세종':'Sejong',
-            '경기':'Gyeonggi', '강원':'Gangwon', '충북':'Chungbuk', '충남':'Chungnam',
-            '전북':'Jeonbuk', '전남':'Jeonnam', '경북':'Gyeongbuk', '경남':'Gyeongnam', '제주':'Jeju'
-        }
-        df['Region_EN'] = df['지역'].map(region_map)
-        pivot = df.pivot_table(index='연도', columns='Region_EN', values='인구', fill_value=0)
-        pivot = pivot / 1000
-        fig, ax = plt.subplots(figsize=(12, 6))
-        pivot.plot(kind='area', stacked=True, cmap='tab20', ax=ax)
-        ax.set_title('Regional Population Trend (stacked)')
-        ax.set_xlabel('Year')
-        ax.set_ylabel('Population (thousands)')
-        ax.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0))
-        st.pyplot(fig)
+        st.info("This section is under development.")
 
 if __name__ == "__main__":
     app = EDA()
