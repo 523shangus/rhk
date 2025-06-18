@@ -1,5 +1,5 @@
 import streamlit as st
-import pyrebase
+import firebase
 import time
 import io
 import pandas as pd
