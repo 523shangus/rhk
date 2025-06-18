@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,8 +5,13 @@ import seaborn as sns
 import numpy as np
 import io
 
-plt.rcParams['font.family'] = 'Malgun Gothic'
-plt.rcParams['axes.unicode_minus'] = False
+# 한글 폰트 설정 (Streamlit 환경에서 폰트 깨짐 방지)
+plt.rcParams['font.family'] = 'Malgun Gothic' # Windows users
+plt.rcParams['axes.unicode_minus'] = False # 마이너스 폰트 깨짐 방지
+
+# Mac 사용자용: 'AppleGothic' 또는 다른 설치된 한글 폰트 사용
+# plt.rcParams['font.family'] = 'AppleGothic'
+
 
 class EDA:
     def __init__(self):
@@ -20,11 +24,17 @@ class EDA:
         uploaded_file = st.file_uploader("Upload population_trends.csv", type=["csv"])
 
         if uploaded_file is not None:
+            # 파일을 BytesIO로 읽어 DataFrame으로 변환
             df = pd.read_csv(uploaded_file)
             st.success("File uploaded successfully!")
 
+            # 탭 구조 생성
             tab1, tab2, tab3, tab4, tab5 = st.tabs([
-                "Basic Statistics", "Annual Trends", "Regional Analysis", "Change Analysis", "Visualization"
+                "Basic Statistics",
+                "Annual Trends",
+                "Regional Analysis",
+                "Change Analysis",
+                "Visualization"
             ])
 
             with tab1:
@@ -64,6 +74,8 @@ class EDA:
 
         st.subheader("Duplicate Rows Check")
         st.write(f"Number of duplicate rows: {df.duplicated().sum()}")
+
+    # 생략: annual_trends, regional_analysis, change_analysis, visualization
 
 if __name__ == "__main__":
     app = EDA()
