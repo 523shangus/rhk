@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,24 +5,25 @@ import seaborn as sns
 import numpy as np
 import io
 
-# 스타일을 이용해 배경을 빨간색으로 설정
-st.markdown(
-    """
+# ✅ set_page_config는 반드시 최상단에 와야 함!!
+st.set_page_config(layout="wide")
+
+# ✅ 배경을 연한 빨간색으로 설정
+st.markdown("""
     <style>
     .stApp {
         background-color: #ffdddd;
     }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
+# 한글 폰트 설정 (윈도우 기준)
 plt.rcParams['font.family'] = 'Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] = False
 
+
 class EDA:
     def __init__(self):
-        st.set_page_config(layout="wide")
         st.title("지역별 인구 분석 웹 앱")
 
     def run(self):
@@ -36,10 +36,12 @@ class EDA:
             st.success("File uploaded successfully!")
 
             tab1, tab2 = st.tabs(["Basic Statistics", "Dummy Tab"])
+
             with tab1:
                 self.basic_statistics(df.copy())
+
             with tab2:
-                st.write("이건 그냥 더미 탭입니다.")
+                st.write("이건 테스트용 더미 탭입니다.")
         else:
             st.info("Please upload a CSV file to begin analysis.")
 
@@ -52,12 +54,21 @@ class EDA:
 
         st.write("`세종` 지역의 '-' 값을 0으로 치환하고, '인구', '출생아수(명)', '사망자수(명)' 열을 숫자로 변환했습니다.")
         st.dataframe(df.head())
+
+        st.subheader("Data Summary Statistics (`df.describe()`)")
         st.write(df.describe())
+
+        st.subheader("DataFrame Structure (`df.info()`)")
         buffer = io.StringIO()
         df.info(buf=buffer)
         st.text(buffer.getvalue())
+
+        st.subheader("Missing Values Check")
         st.write(df.isnull().sum())
+
+        st.subheader("Duplicate Rows Check")
         st.write(f"Number of duplicate rows: {df.duplicated().sum()}")
+
 
 if __name__ == "__main__":
     app = EDA()
