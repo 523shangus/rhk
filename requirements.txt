@@ -1,7 +1,8 @@
 streamlit
 pyrebase4
-setuptools
+pycryptodome
+pandas
+numpy
 matplotlib
 seaborn
-numpy
-pandas
+setuptools
